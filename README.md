@@ -16,4 +16,12 @@ add name=vlan30-users interface=br-lan vlan-id=30
 comment  copy-from  next-pool  ranges
 [admin@ccr] /ip pool> add name=servers-pool ranges=10.10.20.100-10.10.20.200
 [admin@ccr] /ip pool> add name=users-pool ranges=10.10.30.100-10.10.30.200
+
+/ip dhcp-server> add name=dhcp-mgmt interface=vlan10-mgmt address-pool=mgmt-pool disabled=no
+[admin@ccr] /ip dhcp-server> add name=dhcp-servers interface=vlan20-servers address-pool=servers-pool disabled=no
+[admin@ccr] /ip dhcp-server> add name=dhcp-users interface=vlan30-users address-pool=users-pool disabled=no
+[admin@ccr] /ip dhcp-server> network 
+[admin@ccr] /ip dhcp-server network> add address=10.10.10.0/24 gateway=10.10.10.1 dns-server=1.1.1.1,8.8.8.8
+[admin@ccr] /ip dhcp-server network> add address=10.10.20.0/24 gateway=10.10.20.1 dns-server=1.1.1.1,8.8.8.8
+[admin@ccr] /ip dhcp-server network> add address=10.10.30.0/24 gateway=10.10.30.1 dns-server=1.1.1.1,8.8.8.8
 ```
