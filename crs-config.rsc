@@ -1,4 +1,4 @@
-# 1970-01-02 00:07:13 by RouterOS 7.16.2
+# 2025-06-24 18:07:01 by RouterOS 7.16.2
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -57,6 +57,8 @@ add comment=defconf interface=bridgeLocal
 set servers=1.1.1.1,8.8.8.8
 /ip route
 add gateway=10.10.10.1
+/system clock
+set time-zone-name=Europe/Warsaw
 /system note
 set show-at-login=no
 /system routerboard settings
