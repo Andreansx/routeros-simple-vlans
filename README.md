@@ -2,6 +2,8 @@
   
 <h2>RouterOS scenario including a switch, a router, masquerading and vlans</h2>
 <img alt="Static Badge" src="https://img.shields.io/badge/routeros-gray?style=for-the-badge&logo=mikrotik&logoColor=white&logoSize=auto">
+
+<img src="./IMG_3790.JPG">
 </div>
 
 ### Project Goals & Architecture
