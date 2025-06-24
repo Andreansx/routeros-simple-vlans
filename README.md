@@ -29,4 +29,26 @@ This project implements a simple, secure, scalable, and segmented network topolo
 
 - Management laptop is connected to ether1 on the CCR.
 - CCR is connected via sfpplus11 to sfpplus1 on CRS ( trunk ports )
-- WAN is on CCRs sfpplus12 
+- WAN is on CCRs sfpplus12
+
+### Future VLAN assignment to ports on CRS
+All commands below should be run on the CRS326  
+
+1. **Assigning a `pvid` ( Port VLAN ID ) to physical interfaces.**
+  For example if we wanted to add sfpplus5 to vlan 20, then we would run:
+
+```rsc
+/interface bridge port
+set [find interface=sfp-sfpplus5] pvid=20
+```
+2. **Updating VLAN table**  
+Now the table looks something like this:
+```rsc
+set [find vlan-ids=20] untagged=sfp-sfpplus3
+```
+Updating is done by inputting a whole new list:
+```rsc
+/interface bridge vlan
+set [find vlan-ids=20] untagged=sfp-sfpplus3,sfp-sfpplus5
+```
+This will keep the sfp-sfpplus3 physical interface in the **virtual interface - Servers** and also add the sfp-sfpplus5 interface to it.
