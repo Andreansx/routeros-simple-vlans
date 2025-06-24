@@ -1,27 +1,32 @@
-# routeros-simple-vlans
-RouterOS scenario including a switch, a router, masquerading and vlans
-```rsc
-/interface vlan
-add name=vlan10-mgmt interface=br-lan vlan-id=10
-add name=vlan20-servers interface=br-lan vlan-id=20
-add name=vlan30-users interface=br-lan vlan-id=30
+<div align="center">
+  
+<h2>RouterOS scenario including a switch, a router, masquerading and vlans</h2>
+<img alt="Static Badge" src="https://img.shields.io/badge/routeros-gray?style=for-the-badge&logo=mikrotik&logoColor=white&logoSize=auto">
+</div>
 
-/ip address> add address=10.10.10.1/24 interface=vlan10-mgmt comment="gateway for mgmt"
-[admin@ccr] /ip address> add address=10.10.20.1/24 interface=vlan20-servers comment="gateway for servers"
-[admin@ccr] /ip address> add address=10.10.30.1/24 interface=vlan30-users comment="gateway for users"
-[admin@ccr] /ip address> ..
-[admin@ccr] /ip> pool
-[admin@ccr] /ip pool> add name=mgmt-pool ranges=10.10.10.100-10.10.10.200
-[admin@ccr] /ip pool> add name=servers-pool 
-comment  copy-from  next-pool  ranges
-[admin@ccr] /ip pool> add name=servers-pool ranges=10.10.20.100-10.10.20.200
-[admin@ccr] /ip pool> add name=users-pool ranges=10.10.30.100-10.10.30.200
+### Project Goals & Architecture
 
-/ip dhcp-server> add name=dhcp-mgmt interface=vlan10-mgmt address-pool=mgmt-pool disabled=no
-[admin@ccr] /ip dhcp-server> add name=dhcp-servers interface=vlan20-servers address-pool=servers-pool disabled=no
-[admin@ccr] /ip dhcp-server> add name=dhcp-users interface=vlan30-users address-pool=users-pool disabled=no
-[admin@ccr] /ip dhcp-server> network 
-[admin@ccr] /ip dhcp-server network> add address=10.10.10.0/24 gateway=10.10.10.1 dns-server=1.1.1.1,8.8.8.8
-[admin@ccr] /ip dhcp-server network> add address=10.10.20.0/24 gateway=10.10.20.1 dns-server=1.1.1.1,8.8.8.8
-[admin@ccr] /ip dhcp-server network> add address=10.10.30.0/24 gateway=10.10.30.1 dns-server=1.1.1.1,8.8.8.8
-```
+This project implements a simple, secure, scalable, and segmented network topology using MikroTik RouterOS.  
+
+- **VLAN-based Network Segmentation:** The network is logically divided into three distinct broadcast domains to enhance security and manage traffic effectively:
+  - `VLAN 10`: **Management** (`10.10.10.0/24`) - For secure access to network infrastructure.
+  - `VLAN 20`: **Servers** (`10.10.20.0/24`) - An isolated zone for virtual machines, containers, and other services.
+  - `VLAN 30`: **Users** (`10.10.30.0/24`) - A general-purpose network for client devices.
+
+- **Router-on-a-Stick Topology:** All inter-VLAN routing is handled centrally by the CCR2004 router. A single tagged trunk link connects the router to the CRS326 switch, ensuring an efficient and scalable design.
+
+- **Granular Firewall Policies:** A stateful firewall is configured on the CCR to enforce a strict security posture:
+  - **Input Chain Hardening:** The router itself is protected from unauthorized access from the WAN.
+  - **Forward Chain Control:** Specific rules govern the traffic flow between VLANs (e.g., allowing 'Users' to access 'Servers' but blocking the reverse).
+  - **Secure Egress:** All internal networks are granted internet access via a single NAT (Masquerade) rule on the WAN egress interface.
+
+- **Dedicated Physical Management Access:** The router's `ether1` copper port is configured as a dedicated untagged 'access port'. It is bridged with the Management VLAN (`VLAN 10`), providing a reliable physical point of administration.
+
+- **Automated IP Management:** Each VLAN is served by its own DHCP server instance running on the CCR, providing clients with appropriate IP configuration (address, gateway, DNS).
+
+
+### Final structure
+
+- Management laptop is connected to ether1 on the CCR.
+- CCR is connected via sfpplus11 to sfpplus1 on CRS ( trunk ports )
+- WAN is on CCRs sfpplus12 
