@@ -1,4 +1,4 @@
-# jun/24/2025 19:39:59 by RouterOS 6.49.18
+# jun/26/2025 17:30:19 by RouterOS 6.49.18
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -44,8 +44,7 @@ add address=10.10.30.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.10.30.1
 /ip dns
 set servers=1.1.1.1,8.8.8.8
 /ip firewall filter
-add action=drop chain=input in-interface=sfp-sfpplus12 port=22 protocol=\
-    tcp
+add action=drop chain=input in-interface=sfp-sfpplus12 port=22 protocol=tcp
 add action=accept chain=input connection-state=established,related
 add action=accept chain=input src-address=10.10.10.0/24
 add action=accept chain=input protocol=icmp
