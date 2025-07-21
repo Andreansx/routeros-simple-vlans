@@ -55,7 +55,7 @@ add action=accept chain=forward comment=\
 add action=accept chain=forward comment=\
     "allow management to access everything" src-address=10.10.10.0/24
 add action=accept chain=forward comment="allow users to access servers" \
-    dst-address=10.10.30.0/24 src-address=10.10.20.0/24
+    src-address=10.10.30.0/24 dst-address=10.10.20.0/24
 add action=drop chain=forward comment=\
     "drop any traffic trying to enter mgmt vlan" dst-address=10.10.10.0/24
 add action=drop chain=forward comment="drop servers initiating to users" \
